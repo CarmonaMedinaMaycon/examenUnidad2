@@ -6,7 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.Text;
 
+import java.util.Base64;
 import java.util.Date;
 
 @Entity
@@ -26,6 +29,8 @@ public class Libros {
 
     @Column(nullable = false)
     private String autor;
+    @Column(nullable = false)
+    private byte[] image;
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE) // solo guarda año/mes/dia yyyy-mm-dd
