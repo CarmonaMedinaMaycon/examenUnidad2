@@ -1,5 +1,5 @@
 <template>
-  <div   style="height: 2000px" class="content" >
+  <div style="height: 2000px" class="content">
     <template>
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -7,66 +7,72 @@
             <h3>Libros <b-icon icon="camera-reels"></b-icon></h3>
           </b>
         </div>
-    
       </div>
     </template>
 
     <b-row class="mb-4" v-show="showElement">
       <b-col>
         <b-carousel
-        id="carousel-1"
-        v-model="slide"
-        :interval="2000"
-        controls
-        indicators
-        background="#ababab"
-        img-width="200"
-        img-height="480"
-        style="margin-bottom: 100px; text-shadow: 1px 1px 2px #333"
-        @sliding-start="onSlideStart"
-        @sliding-end="onSlideEnd"
-      >
-        <!-- Text slides with image -->
-        <b-carousel-slide
-          caption="First slide"
-          text="Nulla vitae elit libero, a pharetra augue mollis interdum."
-          img-src="https://w.forfun.com/fetch/51/5109391dccffed19bdaa99df57e1f29b.jpeg"
-          img-height="10"
+          id="carousel-1"
+          v-model="slide"
+          :interval="2000"
+          controls
+          indicators
+          background="#ababab"
+          img-width="200"
+          img-height="480"
+          style="margin-bottom: 100px; text-shadow: 1px 1px 2px #333"
+          @sliding-start="onSlideStart"
+          @sliding-end="onSlideEnd"
+        >
+          <!-- Text slides with image -->
+          <b-carousel-slide
+            caption="First slide"
+            text="Nulla vitae elit libero, a pharetra augue mollis interdum."
+            img-src="https://w.forfun.com/fetch/51/5109391dccffed19bdaa99df57e1f29b.jpeg"
+            img-height="10"
           ></b-carousel-slide>
-        <b-carousel-slide
-          caption="First slide"
-          text="Nulla vitae elit libero, a pharetra augue mollis interdum."
-          img-src="https://w.forfun.com/fetch/51/5109391dccffed19bdaa99df57e1f29b.jpeg"
-          img-height="10"
+          <b-carousel-slide
+            caption="First slide"
+            text="Nulla vitae elit libero, a pharetra augue mollis interdum."
+            img-src="https://w.forfun.com/fetch/51/5109391dccffed19bdaa99df57e1f29b.jpeg"
+            img-height="10"
           ></b-carousel-slide>
-        <b-carousel-slide
-          caption="First slide"
-          text="Nulla vitae elit libero, a pharetra augue mollis interdum."
-          img-src="https://w.forfun.com/fetch/51/5109391dccffed19bdaa99df57e1f29b.jpeg"
-          img-height="10"
+          <b-carousel-slide
+            caption="First slide"
+            text="Nulla vitae elit libero, a pharetra augue mollis interdum."
+            img-src="https://w.forfun.com/fetch/51/5109391dccffed19bdaa99df57e1f29b.jpeg"
+            img-height="10"
           ></b-carousel-slide>
-      </b-carousel>
+        </b-carousel>
       </b-col>
     </b-row>
 
-    <b-row>
+    <b-row> </b-row>
 
-    </b-row>
-
-    <b-row class="mb-4" >
+    <b-row class="mb-4">
       <b-col>
         <div class="bodybutton">
           <b-button v-b-modal.modal-save-book class="btnadd">
             <b-icon icon="plus"></b-icon> Registrar Libro
           </b-button>
-          <b-button id="areaLibros" v-b-modal.modal-save-book @drop.prevent="handleDrop" @dragover.prevent class="btnadd">
+          <b-button
+            id="areaLibros"
+            @drop.prevent="handleDropEdit"
+            @dragover.prevent
+            class="btnadd"
+          >
             <b-icon icon="eyedropper"></b-icon> Editar Libro
           </b-button>
-          <b-button id="areaLibros" v-b-modal.modal-save-book @drop.prevent="handleDrop" @dragover.prevent class="btnadd">
+          <b-button
+            id="areaLibros"
+            @drop.prevent="handleDrop"
+            @dragover.prevent
+            class="btnadd"
+          >
             <b-icon icon="x-circle"></b-icon> Eliminar Libro
           </b-button>
         </div>
-        
       </b-col>
       <TransitionGroup name="slideDown" tag="div" class="d-flex flex-wrap">
         <b-col
@@ -78,7 +84,8 @@
           class="mb-4"
         >
           <b-card
-          draggable="true" @dragstart="dragStart"
+            draggable="true"
+            @dragstart="dragStart(libro)"
             :title="libro.name"
             img-src="https://imgs.search.brave.com/5yLy2Vd-AcHQFOAMoQtlMkUY5VNtYEPsmMJ2pLqI1HA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzZXQuY29t/L3cvZnVsbC9iLzcv/OC80MDQzNy5qcGc"
             class="mb-2"
@@ -90,18 +97,19 @@
           </b-card>
         </b-col>
       </TransitionGroup>
- 
     </b-row>
 
     <ModalSaveBook @reloadMovies="getMovies" />
+    <ModalUpdateBook />
   </div>
 </template>
 
 <script>
 import Movies from "./components/services/Books";
 import ModalSaveBook from "./components/books/ModalSaveBook.vue";
+import ModalUpdateBook from "./components/books/ModalUpdateBook.vue";
 export default {
-  components: { ModalSaveBook },
+  components: { ModalSaveBook, ModalUpdateBook },
   name: "libros",
   data() {
     return {
@@ -115,23 +123,29 @@ export default {
       },
       slide: 0,
       sliding: null,
-     
     };
   },
 
   methods: {
-    dragStart(event) {
-      // Inicia el arrastre del formulario de registro de películas
-      event.dataTransfer.setData("pelicula", JSON.stringify(this.pelicula));
+    dragStart(libro) {
+      // Inicia el arrastre de la tarjeta específica
+      event.dataTransfer.setData("libro", JSON.stringify(libro));
     },
     handleDrop(event) {
-      // Manipula el evento de soltar películas en el área de películas
-      const peliculaData = JSON.parse(event.dataTransfer.getData("pelicula"));
-      this.registrarPelicula(peliculaData);
+      // Manipula el evento de soltar tarjeta en el área
+      const libroData = JSON.parse(event.dataTransfer.getData("libro"));
+      console.log("libro data", libroData.id);
+      this.deleteBooks(libroData.id);
     },
-    async registrarPelicula(peliculaData) {
+    handleDropEdit(event) {
+      // Manipula el evento de soltar tarjeta en el área
+      const libroData = JSON.parse(event.dataTransfer.getData("libro"));
+      console.log("libro data", libroData);
+      this.$bvModal.show("modal-update-book");
+    },
+    async deleteBooks(libroData) {
       try {
-        await Movies.postMovie(peliculaData);
+        await Movies.deleteBook(libroData);
         this.getMovies(); // Actualiza la lista de películas después de registrar una nueva
       } catch (error) {
         console.error("Error al registrar la película:", error);

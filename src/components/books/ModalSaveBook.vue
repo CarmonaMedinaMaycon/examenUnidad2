@@ -74,7 +74,7 @@
               </b-col>
             </b-row>
             <b-row>
-                <b-form-file v-model="libro.image" @change="handleFileUpload"  class="mt-3" plain></b-form-file>
+                <b-form-file v-model="libro.image" class="mt-3" plain></b-form-file>
             </b-row>
           </form>
         </main>
@@ -113,18 +113,6 @@ export default {
     };
   },
   methods: {
-    handleFileUpload(event) {
-      const file = event.target.files[0];
-
-      if (file) {
-        // Use FileReader to read the image and convert it to a data URL
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.imageUrl = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    },
     onClose() {
       this.$bvModal.hide("modal-save-book");
       this.libro.name = "";
