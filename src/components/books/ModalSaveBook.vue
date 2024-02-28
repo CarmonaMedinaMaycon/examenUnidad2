@@ -112,7 +112,7 @@ export default {
                 if (result.isConfirmed) {
                     try {
                         console.log(this.pelicula);
-                        await Books.postMovie(this.pelicula);
+                        await Books.postBook(this.pelicula);
                         
                         Swal.fire({
                             title: "¡Guardada!",

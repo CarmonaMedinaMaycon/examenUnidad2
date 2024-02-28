@@ -7,15 +7,11 @@
             <h3>Libros <b-icon icon="camera-reels"></b-icon></h3>
           </b>
         </div>
-        <div class="bodybutton">
-          <b-button v-b-modal.modal-save-book class="btnadd">
-            <b-icon icon="plus"></b-icon> Registrar Libro
-          </b-button>
-        </div>
+    
       </div>
     </template>
 
-    <b-row>
+    <b-row class="mb-4" v-show="showElement">
       <b-col>
         <b-carousel
         id="carousel-1"
@@ -26,7 +22,7 @@
         background="#ababab"
         img-width="200"
         img-height="480"
-        style="text-shadow: 1px 1px 2px #333"
+        style="margin-bottom: 100px; text-shadow: 1px 1px 2px #333"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
@@ -52,8 +48,26 @@
       </b-carousel>
       </b-col>
     </b-row>
-   <div></div>
-    <b-row class="mb-4" v-show="showElement">
+
+    <b-row>
+
+    </b-row>
+
+    <b-row class="mb-4" >
+      <b-col>
+        <div class="bodybutton">
+          <b-button v-b-modal.modal-save-book class="btnadd">
+            <b-icon icon="plus"></b-icon> Registrar Libro
+          </b-button>
+          <b-button id="areaLibros" v-b-modal.modal-save-book @drop.prevent="handleDrop" @dragover.prevent class="btnadd">
+            <b-icon icon="eyedropper"></b-icon> Editar Libro
+          </b-button>
+          <b-button id="areaLibros" v-b-modal.modal-save-book @drop.prevent="handleDrop" @dragover.prevent class="btnadd">
+            <b-icon icon="x-circle"></b-icon> Eliminar Libro
+          </b-button>
+        </div>
+        
+      </b-col>
       <TransitionGroup name="slideDown" tag="div" class="d-flex flex-wrap">
         <b-col
           v-for="(pelicula, key) in peliculas"
@@ -64,6 +78,7 @@
           class="mb-4"
         >
           <b-card
+          draggable="true" @dragstart="dragStart"
             :title="pelicula.name"
             img-src="https://imgs.search.brave.com/5yLy2Vd-AcHQFOAMoQtlMkUY5VNtYEPsmMJ2pLqI1HA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzZXQuY29t/L3cvZnVsbC9iLzcv/OC80MDQzNy5qcGc"
             class="mb-2"
@@ -75,6 +90,7 @@
           </b-card>
         </b-col>
       </TransitionGroup>
+ 
     </b-row>
 
     <ModalSaveBook @reloadMovies="getMovies" />
@@ -104,7 +120,7 @@ export default {
             ],
       showElement: true,
       lastScrollPosition: 0,
-      pelicula: {
+      peliculas: {
         id: 0,
         name: "",
         description: "",
@@ -121,6 +137,23 @@ export default {
   },
 
   methods: {
+    dragStart(event) {
+      // Inicia el arrastre del formulario de registro de películas
+      event.dataTransfer.setData("pelicula", JSON.stringify(this.pelicula));
+    },
+    handleDrop(event) {
+      // Manipula el evento de soltar películas en el área de películas
+      const peliculaData = JSON.parse(event.dataTransfer.getData("pelicula"));
+      this.registrarPelicula(peliculaData);
+    },
+    async registrarPelicula(peliculaData) {
+      try {
+        await Movies.postMovie(peliculaData);
+        this.getMovies(); // Actualiza la lista de películas después de registrar una nueva
+      } catch (error) {
+        console.error("Error al registrar la película:", error);
+      }
+    },
     onSlideStart(slide) {
       this.sliding = true;
     },
@@ -145,7 +178,7 @@ export default {
     },
     async getMovies() {
       try {
-        const response = await Movies.getMovie();
+        const response = await Movies.getBook();
         console.log("soy la data", response);
         this.peliculas = response;
       } catch (error) {
