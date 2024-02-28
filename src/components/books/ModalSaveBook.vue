@@ -74,7 +74,7 @@
               </b-col>
             </b-row>
             <b-row>
-                <b-form-file v-model="libro.image" class="mt-3" plain></b-form-file>
+                <b-form-file v-model="libro.image.name" class="mt-3" plain></b-form-file>
             </b-row>
           </form>
         </main>
@@ -117,6 +117,7 @@ export default {
       this.$bvModal.hide("modal-save-book");
       this.libro.name = "";
       this.libro.autor = "";
+      this.libro.image= "";
       this.libro.releaseDate = null;
     },
     async save() {
