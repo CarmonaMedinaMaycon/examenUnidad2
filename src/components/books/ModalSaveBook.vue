@@ -3,37 +3,41 @@
         <div>
             <b-modal hide-footer hide-header centered id="modal-save-book">
                 <header class="text-center border-bottom">
-                    <p style="font-family: cabin">Registrar pelicula</p>
+                    <p style="font-family: cabin">Registrar libro</p>
                 </header>
                 <main>
-                    <form id="registrarPelicula">
+                    <form id="registrarlibro">
                         <b-row>
                             <b-col>
-                                <label for="pelicula">Nombre de la pelicula: *</label>
+                                <label for="libro">Nombre de la libro: *</label>
                               
-                                    <b-form-input v-model="pelicula.name" type="text" class="form-control"
-              placeholder="Pelicula..." required 
-              :class="{ 'input-border-error': !validateName && pelicula.name.length > 0, 'input-border-success': validateName }"
+                                    <b-form-input v-model="libro.name" type="text" class="form-control"
+              placeholder="libro..." required 
+              :class="{ 'input-border-error': !validateName && libro.name.length > 0, 'input-border-success': validateName }"
               aria-describedby="input-live-help input-live-feedback" />
 
-              <div v-if="!validateName && pelicula.name.length > 0" class="invalid-feedback">Formato inválido</div>
+              <div v-if="!validateName && libro.name.length > 0" class="invalid-feedback">Formato inválido</div>
 
 
                             </b-col>
-                            <b-col>
-                                <label for="pelicula">Genero de la pelicula: *</label>
-                                <b-form-select v-model="pelicula.genres.id" :state="validateGenres" :options="options"></b-form-select>
-
-                                <b-form-invalid-feedback :state="validateGenres">
-                                    Selecciona un género válido
-                                </b-form-invalid-feedback>
-                            </b-col>
+    
                         </b-row>
                         <b-row>
                             <b-col>
-                                <label for="pelicula">Descripción de la pelicula: *</label>
-                                <b-form-textarea id="textarea" v-model="pelicula.description"
-                                    placeholder="Describe la pelicula..." rows="3" max-rows="6"
+                                <label for="libro">Autor: *</label>
+                                <b-form-textarea id="textarea" v-model="libro.autor"
+                                    placeholder="Describe la libro..." rows="3" max-rows="6"
+                                    :state="validateDescription"></b-form-textarea>
+
+                                <b-form-invalid-feedback :state="validateDescription">
+                                    No se aceptan caracteres especiales ni espacios en blanco
+                                </b-form-invalid-feedback>
+
+                            </b-col>
+                            <b-col>
+                                <label for="libro">Fecha de Publicaciones: *</label>
+                                <b-form-textarea id="textarea" v-model="libro.releaseDate"
+                                    placeholder="Describe la libro..." rows="3" max-rows="6"
                                     :state="validateDescription"></b-form-textarea>
 
                                 <b-form-invalid-feedback :state="validateDescription">
@@ -68,40 +72,25 @@ export default {
 
     data() {
         return {
-            pelicula: {
+            libro: {
                 name: "",
-                description: "",
-                genres: {
-                    id:null
-                },
+                autor: "",
+                releaseDate: "",
             },
             selected: null,
-            options: [
-                { value: null, text: "Selecciona una opción" },
-                { value: 1, text: "Terror" },
-                { value: 2, text: "Aventura" },
-                { value: 3, text: "Acción" },
-                { value: 4, text: "Catástrofe" },
-                { value: 5, text: "Ciencia Ficción." },
-                { value: 6, text: "Comedia" },
-                { value: 7, text: "Documentales" },
-                { value: 8, text: "Drama" },
-                { value: 9, text: 'Infantil' },
-            ],
-
         };
     },
     methods: {
         onClose() {
             this.$bvModal.hide("modal-save-book");
-            this.pelicula.name = ""
-            this.pelicula.description = ""
-            this.pelicula.genres.id = null
+            this.libro.name = ""
+            this.libro.autor = ""
+            this.libro.releaseDate = null
 
         },
         async save() {
             Swal.fire({
-                title: "¿Estás seguro de registrar etsa pelicula?",
+                title: "¿Estás seguro de registrar etsa libro?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#008c6f',
@@ -111,19 +100,19 @@ export default {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        console.log(this.pelicula);
-                        await Books.postBook(this.pelicula);
+                        console.log(this.libro);
+                        await Books.postBook(this.libro);
                         
                         Swal.fire({
                             title: "¡Guardada!",
-                            text: "La pelicula se registró correctamente",
+                            text: "La libro se registró correctamente",
                             icon: "success"
                         });
                         this.onClose();
 
                         this.$emit('reloadMovies')
                     } catch (error) {
-                        console.log("Error al guardar la pelicula", error);
+                        console.log("Error al guardar la libro", error);
                     }
 
                 }
@@ -135,17 +124,14 @@ export default {
     computed: {
         validateName() {
             const regex = /^[a-zA-Z0-9]+$/;
-            return this.pelicula.name.length > 0 && this.pelicula.name.length < 100 && regex.test(this.pelicula.name) ;
+            return this.libro.name.length > 0 && this.libro.name.length < 100 && regex.test(this.libro.name) ;
         },
         validateDescription() {
             const regex = /^[a-zA-Z0-9]+$/;
-            return this.pelicula.description.length > 0 && this.pelicula.description.length < 100 && regex.test(this.pelicula.description);
-        },
-        validateGenres() {
-            return this.pelicula.genres.id !== null;
+            return this.libro.description.length > 0 && this.libro.autor.length < 100 && regex.test(this.libro.autor);
         },
         validateForm() {
-            return this.validateName && this.validateDescription && this.validateGenres;
+            return this.validateName && this.validateDescription;
         },
 
     }

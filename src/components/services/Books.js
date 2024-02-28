@@ -41,7 +41,7 @@ const deleteBook = async (id) => {
        console.error(response.data.message);
      } else {
        console.log(response.data.message);
-       this.obtenerPeliculas();
+       this.obtenerLibros();
      }
    } catch (error) {
      console.error("Error al actualizar la película:", error);

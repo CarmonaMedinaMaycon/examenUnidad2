@@ -70,7 +70,7 @@
       </b-col>
       <TransitionGroup name="slideDown" tag="div" class="d-flex flex-wrap">
         <b-col
-          v-for="(pelicula, key) in peliculas"
+          v-for="(libro, key) in libros"
           :key="key"
           lg="3"
           md="6"
@@ -79,13 +79,13 @@
         >
           <b-card
           draggable="true" @dragstart="dragStart"
-            :title="pelicula.name"
+            :title="libro.name"
             img-src="https://imgs.search.brave.com/5yLy2Vd-AcHQFOAMoQtlMkUY5VNtYEPsmMJ2pLqI1HA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzZXQuY29t/L3cvZnVsbC9iLzcv/OC80MDQzNy5qcGc"
             class="mb-2"
           >
             <b-card-text class="card-text-scroll">
-              <b>Género:</b> {{ pelicula.genres.name }}<br />
-              <b>Descripción:</b> {{ pelicula.description }}<br />
+              <b>Autor:</b> {{ libro.autor }}<br />
+              <b>Fecha de publicación:</b> {{ libro.releaseDate }}<br />
             </b-card-text>
           </b-card>
         </b-col>
@@ -102,33 +102,16 @@ import Movies from "./components/services/Books";
 import ModalSaveBook from "./components/books/ModalSaveBook.vue";
 export default {
   components: { ModalSaveBook },
-  name: "pelis",
+  name: "libros",
   data() {
     return {
       selected: null,
-            options: [
-                { value: null, text: "Selecciona una opción" },
-                { value: 1, text: "Terror" },
-                { value: 2, text: "Aventura" },
-                { value: 3, text: "Acción" },
-                { value: 4, text: "Catástrofe" },
-                { value: 5, text: "Ciencia Ficción." },
-                { value: 6, text: "Comedia" },
-                { value: 7, text: "Documentales" },
-                { value: 8, text: "Drama" },
-                { value: 9, text: 'Infantil' },
-            ],
       showElement: true,
       lastScrollPosition: 0,
-      peliculas: {
-        id: 0,
+      libros: {
+        autor: "",
         name: "",
-        description: "",
-        genres: {
-          id: 0,
-          description: "",
-          name: "",
-        },
+        relaseDate: "",
       },
       slide: 0,
       sliding: null,
@@ -180,7 +163,7 @@ export default {
       try {
         const response = await Movies.getBook();
         console.log("soy la data", response);
-        this.peliculas = response;
+        this.libros = response;
       } catch (error) {
         console.log("trono papito", error);
       }
